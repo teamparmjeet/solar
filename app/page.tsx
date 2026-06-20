@@ -9,11 +9,13 @@ import {
   Leaf,
   MapPin
 } from "lucide-react";
+import Link from "next/link";
 
 // --- DATA CONFIGURATION (Professional DRY Approach) ---
 const LOGIN_CARDS = [
   {
     id: "admin",
+    href: "/Alogin",
     title: "Admin Login",
     description: "Secure login for administrators to manage the portal.",
     icon: ShieldCheck,
@@ -24,6 +26,7 @@ const LOGIN_CARDS = [
   },
   {
     id: "emitra",
+    href: "/Elogin",
     title: "e-Mitra Operator",
     description: "Submit and track subsidy applications for citizens.",
     icon: MapPin,
@@ -83,7 +86,8 @@ export default function Home() {
         {/* LOGIN CARDS (Dynamic Row/Col based on available space) */}
         <div className="flex flex-col sm:flex-row gap-3 sm:gap-6 w-full max-w-200 shrink min-h-0 overflow-hidden">
           {LOGIN_CARDS.map((card) => (
-            <div
+            <Link
+              href={card.href}
               key={card.id}
               className={`group relative bg-linear-to-b ${card.cardTheme} rounded-2xl sm:rounded-4xl p-4 sm:p-6 lg:p-8 flex-1 border shadow-xl flex flex-row sm:flex-col items-center sm:items-center text-left sm:text-center transition-all duration-300 sm:hover:-translate-y-1`}
             >
@@ -98,11 +102,11 @@ export default function Home() {
                 <p className="text-[#64748B] text-[11px] sm:text-[13px] lg:text-[14px] leading-tight sm:mb-5 lg:mb-6 sm:max-w-55 line-clamp-2 sm:line-clamp-none">
                   {card.description}
                 </p>
-                <button className={`mt-2 sm:mt-auto w-full max-w-full sm:max-w-50 h-9 sm:h-10 lg:h-12 text-white font-bold text-[11px] sm:text-sm rounded-lg sm:rounded-xl flex items-center justify-center gap-1.5 sm:gap-2 transition-all shadow-lg ${card.btnTheme}`}>
+                <button className={`mt-2 cursor-pointer sm:mt-auto w-full max-w-full sm:max-w-50 h-9 sm:h-10 lg:h-12 text-white font-bold text-[11px] sm:text-sm rounded-lg sm:rounded-xl flex items-center justify-center gap-1.5 sm:gap-2 transition-all shadow-lg ${card.btnTheme}`}>
                   Login <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                 </button>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
 
