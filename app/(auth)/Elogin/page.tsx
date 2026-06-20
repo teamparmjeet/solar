@@ -123,8 +123,7 @@ export default function Page() {
     return (
         <div className="min-h-screen homebg bg-linear-to-br from-yellow-50 via-white to-orange-50 flex items-center justify-center p-2 relative overflow-hidden">
             {/* Background Decoration */}
-            <div className="absolute top-0 left-0 w-96 h-96 bg-yellow-300/20 rounded-full blur-3xl" />
-            <div className="absolute bottom-0 right-0 w-96 h-96 bg-orange-300/20 rounded-full blur-3xl" />
+
 
             {/* Solar Grid */}
             <div
