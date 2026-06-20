@@ -89,9 +89,9 @@ export default function Home() {
             <Link
               href={card.href}
               key={card.id}
-              className={`group relative bg-linear-to-b ${card.cardTheme} rounded-2xl sm:rounded-4xl p-4 sm:p-6 lg:p-8 flex-1 border shadow-xl flex flex-row sm:flex-col items-center sm:items-center text-left sm:text-center transition-all duration-300 sm:hover:-translate-y-1`}
+              className={`group relative bg-linear-to-b ${card.cardTheme} rounded p-4 sm:p-6 lg:p-8 flex-1  flex flex-row sm:flex-col items-center sm:items-center text-left sm:text-center  `}
             >
-              <div className={`w-12 h-12 sm:w-16 sm:h-16 lg:w-20 lg:h-20 shrink-0 rounded-xl sm:rounded-2xl lg:rounded-3xl bg-linear-to-br ${card.iconTheme} flex items-center justify-center sm:mb-4 lg:mb-5 shadow-sm border border-white/50 mr-4 sm:mr-0`}>
+              <div className={`w-12 h-12 sm:w-16 sm:h-16 lg:w-20 lg:h-20 shrink-0 rounded-xl   bg-linear-to-br ${card.iconTheme} flex items-center justify-center sm:mb-4 lg:mb-5 shadow-sm border border-white/50 mr-4 sm:mr-0`}>
                 <card.icon className="w-6 h-6 sm:w-8 sm:h-8 lg:w-10 lg:h-10" strokeWidth={2} />
               </div>
 

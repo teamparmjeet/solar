@@ -1,9 +1,9 @@
 import React from 'react'
 
 export default function page() {
-  return (
-    <div>
-      ALogin
-    </div>
-  )
+    return (
+        <div>
+            ALogin
+        </div>
+    )
 }
