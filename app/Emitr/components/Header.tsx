@@ -1,6 +1,6 @@
 export default function Header({ onMenuClick }: { onMenuClick: () => void }) {
   return (
-    <header className="flex items-center justify-between h-16 px-4 bg-white border-b md:px-6">
+    <header className="flex items-center justify-between h-16 px-4 bg-white border-b border-slate-100 md:px-6">
       <div className="flex items-center">
         {/* Mobile Hamburger Button */}
         <button
