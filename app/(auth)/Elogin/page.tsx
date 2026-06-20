@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
+import Link from "next/link";
 export default function Page() {
     const [phone, setPhone] = useState("");
     const [otp, setOtp] = useState("");
@@ -147,6 +148,9 @@ export default function Page() {
                         <ArrowLeft size={18} />
                         <span>Back</span>
                     </button>
+
+                    <Link href="/Emitr">Go</Link>
+                    
                 </div>
 
                 <div className="bg-white rounded  border border-orange-100 shadow-2xl px-2 py-8">
