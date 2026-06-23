@@ -18,7 +18,7 @@ export default function Page() {
     const user = JSON.parse(userData);
 
     const response = await baseapi(
-      `/api/pmSuryaGhar/getlist/list?user_id=${user.id}&page=${page}&limit=10&status=Pending`
+      `/api/pmSuryaGhar/getlist/list?user_id=${user.id}&page=${page}&limit=10&status=Commissioned`
     );
 
     const data = await response.json();
@@ -40,7 +40,7 @@ export default function Page() {
 
   return (
     <div className=""> 
-      <PmTablePending data={applications} />
+      <PmTablePending data={applications}/>
       <Pagination
         currentPage={currentPage}
         totalPages={totalPages}

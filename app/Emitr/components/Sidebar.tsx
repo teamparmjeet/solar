@@ -41,7 +41,7 @@ export const navLinks = [
       },
       {
         name: "Submitted Applications",
-        href: "/Emitr/submitted-applications",
+        href: "/Emitr/Submitted",
       },
       {
         name: "Feasibility Approved",
