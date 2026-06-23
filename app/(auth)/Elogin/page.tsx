@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import { BASE_URL, baseapi } from "@/app/constants/api";
 export default function Page() {
     const [phone, setPhone] = useState("");
     const [otp, setOtp] = useState("");
@@ -48,58 +49,87 @@ export default function Page() {
             return;
         }
 
-        setPhoneError("");
-        setLoading(true);
-
         try {
-            // Replace this with your API call
-            const newOtp = Math.floor(
-                1000 + Math.random() * 9000
-            ).toString();
+            setLoading(true);
+            setPhoneError("");
 
-            await new Promise((resolve) => setTimeout(resolve, 1500));
+            const response = await baseapi(
+                "/api/auth/sendotp",
+                {
+                    method: "POST",
+                    body: JSON.stringify({
+                        phone,
+                    }),
+                }
+            );
 
-            setGeneratedOtp(newOtp);
+            const data = await response.json();
+
+            if (!response.ok || !data.success) {
+                throw new Error(data.message || "Failed to send OTP");
+            }
+
             setOtpSent(true);
             setTimer(30);
-
-            console.log("Generated OTP:", newOtp);
-
+        } catch (error: any) {
+            setPhoneError(error.message || "Failed to send OTP");
+        } finally {
             setLoading(false);
-        } catch (error) {
-            setLoading(false);
-            setPhoneError("Failed to send OTP. Please try again.");
         }
     };
 
     const handleVerifyOtp = async () => {
-        if (!otp.trim()) {
+        if (!otp) {
             setOtpError("Please enter OTP");
             return;
         }
 
-        if (otp.length !== 4) {
-            setOtpError("OTP must be 4 digits");
+        if (otp.length !== 6) {
+            setOtpError("OTP must be 6 digits");
             return;
         }
-
-        if (otp !== generatedOtp) {
-            setOtpError("Invalid OTP");
-            return;
-        }
-
-        setOtpError("");
-        setLoading(true);
 
         try {
-            await new Promise((resolve) => setTimeout(resolve, 1000));
+            setLoading(true);
+            setOtpError("");
 
-            alert("Login Successful");
+            const response = await baseapi(
+                "/api/auth/login",
+                {
+                    method: "POST",
+                    credentials: "include",
+                    body: JSON.stringify({
+                        phone,
+                        otp,
+                    }),
+                }
+            );
 
+            const data = await response.json();
+
+            if (!response.ok || !data.success) {
+                throw new Error(
+                    data.message || "Login failed"
+                );
+            }
+            localStorage.setItem("token", data.token);
+            localStorage.setItem(
+                "user",
+                JSON.stringify(data.user)
+            );
+            document.cookie = `token=${data.token}; path=/`;
+            document.cookie = `role=${data.user.role}; path=/`;
+            if (data.user.role === "admin") {
+                router.replace("/Admin");
+            } else {
+                router.replace("/Emitr");
+            }
+        } catch (error: any) {
+            setOtpError(
+                error.message || "OTP verification failed"
+            );
+        } finally {
             setLoading(false);
-        } catch {
-            setLoading(false);
-            setOtpError("Verification failed");
         }
     };
 
@@ -115,7 +145,7 @@ export default function Page() {
     const handleOtpChange = (e: { target: { value: string; }; }) => {
         const value = e.target.value.replace(/\D/g, "");
 
-        if (value.length <= 4) {
+        if (value.length <= 6) {
             setOtp(value);
             setOtpError("");
         }
@@ -149,8 +179,7 @@ export default function Page() {
                         <span>Back</span>
                     </button>
 
-                    <Link href="/Emitr">Go</Link>
-                    
+
                 </div>
 
                 <div className="bg-white rounded  border border-orange-100 shadow-2xl px-2 py-8">
@@ -219,7 +248,7 @@ export default function Page() {
                                         placeholder="Enter 4 Digit OTP"
                                         value={otp}
                                         onChange={handleOtpChange}
-                                        maxLength={4}
+                                        maxLength={6}
                                         className={`w-full h-14 px-4 rounded-xl border outline-none ${otpError
                                             ? "border-red-500"
                                             : "border-gray-300"
@@ -235,7 +264,7 @@ export default function Page() {
 
                                 <button
                                     onClick={handleVerifyOtp}
-                                    disabled={loading || otp.length !== 4}
+                                    disabled={loading || otp.length !== 6}
                                     className="w-full h-14 rounded-xl font-semibold text-white bg-linear-to-r from-green-500 to-emerald-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all hover:shadow-lg"
                                 >
                                     {loading ? "Verifying..." : "Verify OTP"}

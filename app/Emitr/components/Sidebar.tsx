@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { baseapi } from "@/app/constants/api";
 import {
   LayoutDashboard,
   FilePlus2,
@@ -13,8 +14,13 @@ import {
   Bell,
   Wallet,
   Settings,
+  LogOut,
+  ChevronDown,
+  ChevronRight
 } from "lucide-react";
-// Define your navigation links here for easy management
+import { useRouter } from "next/navigation";
+import { forceLogout } from "@/app/utils/logout";
+import { useState } from "react";
 export const navLinks = [
   {
     name: "Dashboard",
@@ -22,34 +28,50 @@ export const navLinks = [
     icon: LayoutDashboard,
   },
   {
-    name: "New Application",
-    href: "/Emitr/NewApplication",
+    name: "Applications",
     icon: FilePlus2,
-  },
-  {
-    name: "Pending Applications",
-    href: "/Emitr/PendingApplication",
-    icon: Clock3,
-  },
-  {
-    name: "Approved Applications",
-    href: "/approved-applications",
-    icon: CheckCircle2,
-  },
-  {
-    name: "Rejected Applications",
-    href: "/rejected-applications",
-    icon: XCircle,
-  },
-  {
-    name: "Beneficiary List",
-    href: "/beneficiary-list",
-    icon: Users,
-  },
-  {
-    name: "Solar Installations",
-    href: "/solar-installations",
-    icon: Sun,
+    children: [
+      {
+        name: "New Application",
+        href: "/Emitr/NewApplication",
+      },
+      {
+        name: "Pending Applications",
+        href: "/Emitr/PendingApplication",
+      },
+      {
+        name: "Submitted Applications",
+        href: "/Emitr/submitted-applications",
+      },
+      {
+        name: "Feasibility Approved",
+        href: "/Emitr/feasibility-approved",
+      },
+      {
+        name: "Vendor Assigned",
+        href: "/Emitr/vendor-assigned",
+      },
+      {
+        name: "Installed Systems",
+        href: "/Emitr/installed",
+      },
+      {
+        name: "Net Metered",
+        href: "/Emitr/net-metered",
+      },
+      {
+        name: "Commissioned Systems",
+        href: "/Emitr/commissioned",
+      },
+      {
+        name: "Subsidy Released",
+        href: "/Emitr/subsidy-released",
+      },
+      {
+        name: "Rejected Applications",
+        href: "/Emitr/rejected-applications",
+      },
+    ],
   },
   {
     name: "Notifications",
@@ -76,6 +98,9 @@ export default function Sidebar({
   setIsOpen: (val: boolean) => void;
 }) {
   const pathname = usePathname();
+  const router = useRouter();
+
+  const [openMenu, setOpenMenu] = useState<string | null>("");
 
   return (
     <>
@@ -105,38 +130,77 @@ export default function Sidebar({
         {/* Navigation Links */}
         <nav className="flex-1 p-2 space-y-1 overflow-y-auto">
           {navLinks.map((link) => {
-            const isActive = pathname === link.href;
             const Icon = link.icon;
+
+            if (link.children) {
+              return (
+                <div key={link.name}>
+                  <button
+                    onClick={() =>
+                      setOpenMenu(
+                        openMenu === link.name ? null : link.name
+                      )
+                    }
+                    className="w-full flex border-b border-slate-200 items-center justify-between gap-3 p-2   text-slate-600 hover:bg-slate-50"
+                  >
+                    <div className="flex items-center gap-3">
+                      <Icon size={16} />
+                      <span>{link.name}</span>
+                    </div>
+
+                    {openMenu === link.name ? (
+                      <ChevronDown size={16} />
+                    ) : (
+                      <ChevronRight size={16} />
+                    )}
+                  </button>
+
+                  {openMenu === link.name && (
+                    <div className="ml-6 mt-1 space-y-1">
+                      {link.children.map((child) => {
+                        const isActive =
+                          pathname === child.href;
+
+                        return (
+                          <Link
+                            key={child.name}
+                            href={child.href}
+                            onClick={() => setIsOpen(false)}
+                            className={`flex items-center p-2   text-sm transition-all
+                      ${isActive
+                                ? "bg-amber-50 text-amber-600 border-b border-amber-100"
+                                : "text-slate-600 border-b border-slate-200 hover:bg-slate-50   text-sm"
+                              }`}
+                          >
+                            {child.name}
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              );
+            }
+
+            const isActive = pathname === link.href;
 
             return (
               <Link
                 key={link.name}
-                href={link.href}
+                href={link.href!}
                 onClick={() => setIsOpen(false)}
-                className={`group flex items-center gap-3 p-2 rounded transition-all duration-200
+                className={`group flex items-center gap-3 p-2   transition-all
           ${isActive
-                    ? "bg-linear-to-r from-amber-50 to-yellow-50 text-amber-600 text-sm font-semibold  border border-amber-100"
-                    : "text-slate-500 hover:bg-slate-50 hover:text-slate-700 text-sm font-semibold border border-transparent"
+                    ? "bg-amber-50 text-amber-600 border-b border-amber-100"
+                    : "text-slate-600 border-b border-slate-200 hover:bg-slate-50  "
                   }`}
               >
-                <Icon
-                  size={16}
-                  className={`shrink-0 transition-colors duration-200 ${isActive
-                    ? "text-amber-500"
-                    : "text-slate-400 group-hover:text-amber-500"
-                    }`}
-                />
-
-                <span className="truncate">{link.name}</span>
-
-                {isActive && (
-                  <div className="ml-auto h-2 w-2 rounded-full bg-amber-500" />
-                )}
+                <Icon size={16} />
+                <span>{link.name}</span>
               </Link>
             );
           })}
         </nav>
-
         {/* Optional: Bottom Footer/User Profile area */}
         <div className="p-4 border-t border-slate-100">
           <div className="flex items-center gap-3 px-3 py-2 bg-slate-50 rounded-xl">
@@ -148,6 +212,13 @@ export default function Sidebar({
               <span className="text-xs text-slate-500">Emitr Portal</span>
             </div>
           </div>
+          <button
+            onClick={forceLogout}
+            className="w-full flex items-center justify-center gap-2 px-3 py-2 text-sm font-semibold text-red-600 bg-red-50 border border-red-100 rounded-xl hover:bg-red-100 transition-all duration-200"
+          >
+            <LogOut size={16} />
+            Logout
+          </button>
         </div>
       </aside>
     </>
