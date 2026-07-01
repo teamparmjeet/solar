@@ -15,28 +15,41 @@ import Link from "next/link";
 const LOGIN_CARDS = [
   {
     id: "admin",
-    href: "/Alogin",
-    title: "Admin Login",
-    description: "Secure login for administrators to manage the portal.",
+    title: "Admin Portal",
+    description: "Secure access for administrators to manage and monitor the portal.",
     icon: ShieldCheck,
-    btnText: "Login as Admin",
-    cardTheme: "from-[#FFFDF8] to-[#FFF7E3] border-[#FDECBF] shadow-orange-500/5 hover:shadow-orange-500/10",
+
+    loginHref: "/Alogin",
+    signupHref: "/Asignup",
+
+    cardTheme:
+      "from-[#FFFDF8] to-[#FFF7E3] border-[#FDECBF] shadow-orange-500/5 hover:shadow-orange-500/10",
     iconTheme: "from-[#FFF4D4] to-[#FFE8A1] text-[#F5A623]",
-    btnTheme: "bg-[#F5A623] hover:bg-[#E0931B] shadow-orange-500/20 group-hover:shadow-orange-500/40",
+
+    loginTheme:
+      "bg-[#F5A623] hover:bg-[#E0931B] shadow-orange-500/20",
+    signupTheme:
+      "border border-[#F5A623] text-[#F5A623] hover:bg-[#FFF4D4]",
   },
   {
     id: "emitra",
-    href: "/Elogin",
     title: "e-Mitra Operator",
-    description: "Submit and track subsidy applications for citizens.",
+    description: "Register, submit and track subsidy applications for citizens.",
     icon: MapPin,
-    btnText: "Login as e-Mitra",
-    cardTheme: "from-[#F9FAFF] to-[#EDF1FF] border-[#DCE3FF] shadow-blue-500/5 hover:shadow-blue-500/10",
-    iconTheme: "bg-white text-[#525CEB]",
-    btnTheme: "bg-[#525CEB] hover:bg-[#434BCC] shadow-blue-500/20 group-hover:shadow-blue-500/40",
-  }
-];
 
+    loginHref: "/Elogin",
+    signupHref: "/Esignup",
+
+    cardTheme:
+      "from-[#F9FAFF] to-[#EDF1FF] border-[#DCE3FF] shadow-blue-500/5 hover:shadow-blue-500/10",
+    iconTheme: "bg-white text-[#525CEB]",
+
+    loginTheme:
+      "bg-[#525CEB] hover:bg-[#434BCC] shadow-blue-500/20",
+    signupTheme:
+      "border border-[#525CEB] text-[#525CEB] hover:bg-[#EEF1FF]",
+  },
+];
 
 export default function Home() {
   return (
@@ -86,10 +99,9 @@ export default function Home() {
         {/* LOGIN CARDS (Dynamic Row/Col based on available space) */}
         <div className="flex flex-col sm:flex-row gap-3 sm:gap-6 w-full max-w-200 shrink min-h-0 overflow-hidden">
           {LOGIN_CARDS.map((card) => (
-            <Link
-              href={card.href}
+            <div
               key={card.id}
-              className={`group relative bg-linear-to-b ${card.cardTheme} rounded p-4 sm:p-6 lg:p-8 flex-1  flex flex-row sm:flex-col items-center sm:items-center text-left sm:text-center  `}
+              className={`group relative bg-linear-to-b ${card.cardTheme} rounded p-4 sm:p-6 lg:p-8 flex-1 flex flex-row sm:flex-col items-center sm:items-center text-left sm:text-center`}
             >
               <div className={`w-12 h-12 sm:w-16 sm:h-16 lg:w-20 lg:h-20 shrink-0 rounded-xl   bg-linear-to-br ${card.iconTheme} flex items-center justify-center sm:mb-4 lg:mb-5 shadow-sm border border-white/50 mr-4 sm:mr-0`}>
                 <card.icon className="w-6 h-6 sm:w-8 sm:h-8 lg:w-10 lg:h-10" strokeWidth={2} />
@@ -102,11 +114,26 @@ export default function Home() {
                 <p className="text-[#64748B] text-[11px] sm:text-[13px] lg:text-[14px] leading-tight sm:mb-5 lg:mb-6 sm:max-w-55 line-clamp-2 sm:line-clamp-none">
                   {card.description}
                 </p>
-                <button className={`mt-2 cursor-pointer sm:mt-auto w-full max-w-full sm:max-w-50 h-9 sm:h-10 lg:h-12 text-white font-bold text-[11px] sm:text-sm rounded-lg sm:rounded-xl flex items-center justify-center gap-1.5 sm:gap-2 transition-all shadow-lg ${card.btnTheme}`}>
-                  Login <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                </button>
+                <div className="mt-3 sm:mt-auto w-full flex gap-2">
+                  <Link
+                    href={card.loginHref}
+                    className={`flex-1 h-9 sm:h-10 lg:h-12 text-white font-bold text-[11px] sm:text-sm rounded-lg sm:rounded-xl flex items-center justify-center gap-1.5 transition-all shadow-lg ${card.loginTheme}`}
+                    
+                  >
+                    Login
+                    <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                  </Link>
+
+                  <Link
+                    href={card.signupHref}
+                    className={`flex-1 h-9 sm:h-10 lg:h-12 font-bold text-[11px] sm:text-sm rounded-lg sm:rounded-xl flex items-center justify-center transition-all ${card.signupTheme}`}
+                    
+                  >
+                    Sign Up
+                  </Link>
+                </div>
               </div>
-            </Link>
+            </div>
           ))}
         </div>
 

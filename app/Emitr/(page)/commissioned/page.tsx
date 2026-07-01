@@ -5,7 +5,6 @@ import { baseapi } from "@/app/constants/api";
 import Pagination from "@/app/component/Pagination";
 import PmTablePending from "@/app/component/Emitr/Table/PmTablepending";
 export default function Page() {
-  const [user, setUser] = useState<any>(null);
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);

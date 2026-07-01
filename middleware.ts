@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export function middleware(request: NextRequest) {
     const pathname = request.nextUrl.pathname;
+    const planStatus = request.cookies.get("plan_status")?.value;
 
     const token =
         request.cookies.get("token")?.value;
@@ -37,9 +38,25 @@ export function middleware(request: NextRequest) {
 
     if (pathname.startsWith("/Emitr")) {
         if (!token || role !== "emitr") {
-            return NextResponse.redirect(
-                new URL("/Elogin", request.url)
+            return NextResponse.redirect(new URL("/Elogin", request.url));
+        }
+
+        // If plan is not active
+        if (planStatus !== "active") {
+            const allowedPaths = [
+                "/Emitr",
+                "/Emitr/Setting",
+            ];
+
+            const isAllowed = allowedPaths.some(
+                (path) => pathname === path
             );
+
+            if (!isAllowed) {
+                return NextResponse.redirect(
+                    new URL("/Emitr", request.url)
+                );
+            }
         }
     }
 

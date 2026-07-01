@@ -119,6 +119,8 @@ export default function Page() {
             );
             document.cookie = `token=${data.token}; path=/`;
             document.cookie = `role=${data.user.role}; path=/`;
+            document.cookie = `plan_status=${data.user.active_plan ? "active" : "inactive"
+                }; path=/`;
             if (data.user.role === "admin") {
                 router.replace("/Admin");
             } else {
@@ -167,46 +169,42 @@ export default function Page() {
                     backgroundSize: "40px 40px",
                 }}
             />
+            <div className="relative z-10 w-full max-w-sm mx-auto">
 
-            <div className="relative z-10 w-full max-w-md">
-                {/* Header */}
-                <div className=" absolute">
+                {/* Back Button */}
+                <div className="absolute -top-10 left-0">
                     <button
                         onClick={() => router.back()}
-                        className="flex items-center gap-2 cursor-pointer bg-gray-50 backdrop-blur-md border border-orange-100 px-4 py-1 rounded transition-all duration-300 text-gray-700 font-medium"
+                        className="flex cursor-pointer items-center gap-1 bg-white border border-orange-100 shadow-sm px-3 py-1 rounded-md text-gray-700 hover:bg-gray-50 transition"
                     >
-                        <ArrowLeft size={18} />
-                        <span>Back</span>
+                        <ArrowLeft size={16} />
                     </button>
-
-
                 </div>
 
-                <div className="bg-white rounded  border border-orange-100 shadow-2xl px-2 py-8">
-                    <div className="text-center mb-8">
-                        <h1 className="text-3xl font-bold text-gray-800">
+                {/* Card */}
+                <div className="bg-white border border-orange-100 shadow-lg rounded-md px-5 py-6">
+
+                    {/* Header */}
+                    <div className="text-center mb-6">
+                        <h1 className="text-2xl font-bold text-gray-800">
                             Solar Portal
                         </h1>
-
-                        <p className="text-gray-500 mt-2">
+                        <p className="text-gray-500 text-sm mt-1">
                             Login with your mobile number
                         </p>
                     </div>
 
-                    <div className="space-y-5">
-                        {/* Phone Input */}
+                    <div className="space-y-4">
+
+                        {/* Mobile Input */}
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                            <label className="block text-xs font-medium text-gray-700 mb-1">
                                 Mobile Number
                             </label>
 
-                            <div
-                                className={`flex items-center h-12 rounded  border overflow-hidden ${phoneError
-                                    ? "border-red-500"
-                                    : "border-gray-300"
-                                    }`}
-                            >
-                                <div className="px-4 bg-gray-100 h-full flex items-center font-medium text-gray-700 border-r">
+                            <div className={`flex items-center h-10 rounded-md border overflow-hidden ${phoneError ? "border-red-500" : "border-gray-300"
+                                }`}>
+                                <div className="px-3 bg-gray-100 h-full flex items-center text-sm border-r">
                                     +91
                                 </div>
 
@@ -216,22 +214,23 @@ export default function Page() {
                                     value={phone}
                                     onChange={handlePhoneChange}
                                     disabled={otpSent}
-                                    className="flex-1 h-full px-4 outline-none text-gray-800 disabled:bg-gray-50"
+                                    className="flex-1 h-full px-3 text-sm outline-none disabled:bg-gray-50"
                                 />
                             </div>
 
                             {phoneError && (
-                                <p className="text-red-500 text-sm mt-2">
+                                <p className="text-red-500 text-xs mt-1">
                                     {phoneError}
                                 </p>
                             )}
                         </div>
 
+                        {/* Send OTP */}
                         {!otpSent ? (
                             <button
                                 onClick={handleSendOtp}
                                 disabled={loading || phone.length !== 10}
-                                className="w-full h-12 rounded  font-semibold text-white bg-linear-to-r from-yellow-500 to-orange-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all hover:shadow-lg"
+                                className="w-full h-10 rounded-md text-sm font-semibold text-white bg-linear-to-r from-yellow-500 to-orange-500 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-md transition"
                             >
                                 {loading ? "Sending OTP..." : "Send OTP"}
                             </button>
@@ -239,64 +238,66 @@ export default function Page() {
                             <>
                                 {/* OTP Input */}
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    <label className="block text-xs font-medium text-gray-700 mb-1">
                                         Enter OTP
                                     </label>
 
                                     <input
                                         type="text"
-                                        placeholder="Enter 4 Digit OTP"
+                                        placeholder="Enter 6 digit OTP"
                                         value={otp}
                                         onChange={handleOtpChange}
                                         maxLength={6}
-                                        className={`w-full h-14 px-4 rounded-xl border outline-none ${otpError
-                                            ? "border-red-500"
-                                            : "border-gray-300"
+                                        className={`w-full h-10 px-3 rounded-md border text-sm outline-none ${otpError ? "border-red-500" : "border-gray-300"
                                             } focus:border-orange-500`}
                                     />
 
                                     {otpError && (
-                                        <p className="text-red-500 text-sm mt-2">
+                                        <p className="text-red-500 text-xs mt-1">
                                             {otpError}
                                         </p>
                                     )}
                                 </div>
 
+                                {/* Verify OTP */}
                                 <button
                                     onClick={handleVerifyOtp}
                                     disabled={loading || otp.length !== 6}
-                                    className="w-full h-14 rounded-xl font-semibold text-white bg-linear-to-r from-green-500 to-emerald-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all hover:shadow-lg"
+                                    className="w-full h-10 rounded-md text-sm font-semibold text-white bg-linear-to-r from-green-500 to-emerald-600 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-md transition"
                                 >
                                     {loading ? "Verifying..." : "Verify OTP"}
                                 </button>
 
-                                {timer > 0 ? (
-                                    <p className="text-center text-sm text-gray-500">
-                                        Resend OTP in{" "}
-                                        <span className="font-semibold text-orange-600">
-                                            {timer}s
-                                        </span>
-                                    </p>
-                                ) : (
-                                    <button
-                                        onClick={handleSendOtp}
-                                        className="w-full text-orange-600 font-semibold hover:text-orange-700"
-                                    >
-                                        Resend OTP
-                                    </button>
-                                )}
+                                {/* Timer / Resend */}
+                                <div className="text-center text-xs">
+                                    {timer > 0 ? (
+                                        <p className="text-gray-500">
+                                            Resend OTP in{" "}
+                                            <span className="text-orange-600 font-semibold">
+                                                {timer}s
+                                            </span>
+                                        </p>
+                                    ) : (
+                                        <button
+                                            onClick={handleSendOtp}
+                                            className="text-orange-600 font-semibold hover:text-orange-700"
+                                        >
+                                            Resend OTP
+                                        </button>
+                                    )}
+                                </div>
                             </>
                         )}
                     </div>
 
-                    <div className="mt-8 pt-6 border-t border-gray-100 text-center">
-                        <p className="text-xs text-gray-500">
+                    {/* Footer */}
+                    <div className="mt-5 pt-4 border-t border-gray-100 text-center">
+                        <p className="text-[11px] text-gray-500">
                             Solar Subsidy e-Mitra Portal
                         </p>
                     </div>
+
                 </div>
-
-
             </div>
         </div>
     );

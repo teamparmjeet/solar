@@ -6,11 +6,6 @@ import { baseapi } from "@/app/constants/api";
 import {
   LayoutDashboard,
   FilePlus2,
-  Clock3,
-  CheckCircle2,
-  XCircle,
-  Users,
-  Sun,
   Bell,
   Wallet,
   Settings,
@@ -20,7 +15,7 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { forceLogout } from "@/app/utils/logout";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 export const navLinks = [
   {
     name: "Dashboard",
@@ -84,8 +79,8 @@ export const navLinks = [
     icon: Wallet,
   },
   {
-    name: "Settings",
-    href: "/settings",
+    name: "Setting",
+    href: "/Emitr/Setting",
     icon: Settings,
   },
 ];
@@ -99,9 +94,52 @@ export default function Sidebar({
 }) {
   const pathname = usePathname();
   const router = useRouter();
-
   const [openMenu, setOpenMenu] = useState<string | null>("");
+  const [logindata, setLogindata] = useState<any>(null);
 
+  const hasActivePlan =
+    logindata?.active_plan?.status === "active";
+
+  useEffect(() => {
+    document.cookie = `plan_status=${hasActivePlan ? "active" : "inactive"
+      }; path=/`;
+  }, [hasActivePlan]);
+
+
+  const [loading, setLoading] = useState(true);
+
+  const fetchLoginData = async (page = 1) => {
+    const userData = localStorage.getItem("user");
+
+    if (!userData) return;
+
+    const user = JSON.parse(userData);
+
+    const response = await baseapi(
+      `/api/user/${user.id}`
+    );
+
+    const data = await response.json();
+    if (data.success) {
+      setLogindata(data.data);
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchLoginData(1);
+  }, []);
+  const visibleNavLinks = navLinks.filter((link) => {
+    // These pages require an active plan
+    if (
+      ["Applications", "Notifications", "Wallet"].includes(link.name)
+    ) {
+      return hasActivePlan;
+    }
+
+    // Always visible
+    return true;
+  });
   return (
     <>
       {/* Mobile Overlay with a smooth fade */}
@@ -129,7 +167,7 @@ export default function Sidebar({
 
         {/* Navigation Links */}
         <nav className="flex-1 p-2 space-y-1 overflow-y-auto">
-          {navLinks.map((link) => {
+          {visibleNavLinks.map((link) => {
             const Icon = link.icon;
 
             if (link.children) {
